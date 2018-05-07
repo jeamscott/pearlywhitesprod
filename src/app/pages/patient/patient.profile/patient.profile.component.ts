@@ -1,0 +1,79 @@
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { AuthenticationService, UserDetails } from '../../../services/authentication.service';
+import { SupportService } from '../../../services/support.service';
+import { FilterSortService } from '../../../services/filtersort';
+import { Subscription } from 'rxjs/Subscription';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute } from '@angular/router';
+import { PatientComponent } from '../patient.component'
+
+@Component({
+    selector: 'app-patient-profile',
+    templateUrl: './patient.profile.component.html',
+    })
+    
+  export class PatientProfileComponent implements OnInit, OnDestroy {
+    details: UserDetails;
+    patientsSub: Subscription;
+    routeSub: Subscription;
+    profilerouteSub: Subscription;
+    id: string;
+    patient;
+    patientProfile;
+  
+    constructor(private auth: AuthenticationService, public supportService: SupportService, public fs: FilterSortService, private route: ActivatedRoute,) {}
+  
+    ngOnInit() {
+      
+      this.auth.profile().subscribe(user => {
+        this.details = user;
+      }, (err) => {
+        console.error(err);
+      });
+  
+
+  
+      this.profilerouteSub = this.route.params
+      .subscribe(params => {
+        this.id = params['id'];
+        this._getPatientProfile();
+      });
+  
+
+    }
+  
+  
+    public _getPatientProfile() {
+      this.patientsSub = this.supportService
+                            .getPatientProfile(this.id)
+                            .subscribe(
+                              res => {
+                                this.patientProfile = res;
+                              },
+                              err => {
+                                console.error(err);
+  
+                              }
+                            )
+    }
+  
+    public _setPatientProfile() {
+      this.patientsSub = this.supportService
+                            .updatePatientProfile(this.id, this.patientProfile)
+                            .subscribe(() => {
+                              },
+                              err => {
+                                console.error(err);
+  
+                              }
+                            )
+                            window.alert("Updated");
+    }
+  
+    
+    ngOnDestroy() {
+      //this.routeSub.unsubscribe();
+      //this.patientsSub.unsubscribe();
+    }
+  }
+  

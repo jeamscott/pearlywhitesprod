@@ -1,0 +1,45 @@
+import { Component } from '@angular/core';
+import { AuthenticationService, UserDetails, TokenPayload } from '../../services/authentication.service';
+import { PatientProfileService, PatientPayload } from '../../services/patient.profile.service';
+import { BillingService} from '../../services/billing.service';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+// import { Payment } from '../../../node_modules/payment/dist/payment.js'
+
+@Component({
+  templateUrl: './pay.component.html'
+})
+export class PayComponent {
+  details: UserDetails;
+  bill;
+  thing;
+
+
+  constructor(private auth: AuthenticationService, private patientService: PatientProfileService, private billingService: BillingService, private router: Router) {}
+  
+  ngOnInit() {    
+    this.auth.profile().subscribe(user => {
+      this.details = user;
+    }, (err) => {
+      console.log(err);
+    });
+
+    this.billingService.get_bill().subscribe(bills => {
+      this.bill = bills;
+    }, (err) => {
+      console.error(err);
+    });
+  }
+
+  make_payment() {
+    this.billingService.pay_bill(this.bill).subscribe(() => {
+      //this.router.navigateByUrl('/thank.you');
+        window.alert("Thank you for your payment");
+		location.reload();
+      }, (err) => {
+      console.error(err);
+    });
+  };
+
+  
+}
