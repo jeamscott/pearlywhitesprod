@@ -46,7 +46,7 @@ export class InventoryService {
     
     if (method === 'post') {
       request._id = this.auth.getUserDetails()._id;
-    base = this.http.post(`${ENV.BASE_API}${type}`, request, { headers: { Authorization: `Bearer ${this.getToken()}` }});
+      base = this.http.post(`${ENV.BASE_API}${type}`, request, { headers: { Authorization: `Bearer ${this.getToken()}` }});
     } 
       else if (method === 'put'){ 
       request._id = this.auth.getUserDetails()._id;

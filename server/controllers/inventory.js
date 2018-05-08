@@ -11,17 +11,17 @@ module.exports.getAll = function(req, res) {
     
     Inventory
       .find({}, _inventoryProjection, (err, inventory) => {
-        let inventorytArr = [];
+        let inventoryArr = [];
         if (err) {
           return res.status(500).send({message: err.message});
         }
         if (inventory) {
           inventory.forEach(inventory => {
-            inventorytArr.push(inventory);
+            inventoryArr.push(inventory);
           });
         }
         
-        res.send(inventorytArr);
+        res.send(inventoryArr);
       });
   
   
