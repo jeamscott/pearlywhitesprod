@@ -7,11 +7,7 @@ var Inventory = mongoose.model('Inventory');
 
 module.exports.getAll = function(req, res) {
   const _inventoryProjection = "item_name product_description quantity cost"
-  if (!req.payload._id) {
-    res.status(401).json({
-      "message" : "UnauthorizedError: private profile"
-    });
-  } else {
+
     
     Inventory
       .find({}, _inventoryProjection, (err, inventory) => {
@@ -27,7 +23,7 @@ module.exports.getAll = function(req, res) {
         
         res.send(inventorytArr);
       });
-  }
+  
   
 };
 
